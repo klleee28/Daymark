@@ -3,13 +3,14 @@ import { AreaDialog } from '../components/AreaDialog'
 import { MainView } from '../components/MainView'
 import { MobileTabBar } from '../components/MobileTabBar'
 import { QuickAddSheet } from '../components/QuickAddSheet'
+import { ProjectDialog } from '../components/ProjectDialog'
 import { SearchDialog } from '../components/SearchDialog'
 import { SettingsDialog } from '../components/SettingsDialog'
 import { Sidebar } from '../components/Sidebar'
 import { useUIStore } from '../store/uiStore'
 
 export function App() {
-  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setMoreMenuOpen, themeMode } = useUIStore()
+  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setMoreMenuOpen, themeMode } = useUIStore()
 
   useEffect(() => {
     document.documentElement.dataset.theme = themeMode
@@ -31,12 +32,13 @@ export function App() {
         setSearchOpen(false)
         setSettingsOpen(false)
         setAreaDialogOpen(false)
+        setProjectDialogOpen(false)
         setMoreMenuOpen(false)
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [setAreaDialogOpen, setMoreMenuOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
+  }, [setAreaDialogOpen, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
 
   return (
     <div className="app-shell">
@@ -47,6 +49,7 @@ export function App() {
       <SearchDialog />
       <SettingsDialog />
       <AreaDialog />
+      <ProjectDialog />
     </div>
   )
 }

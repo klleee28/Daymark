@@ -27,7 +27,7 @@ const smartViews: Array<{ id: SmartView; label: string; icon: typeof Inbox }> = 
 ]
 
 export function Sidebar() {
-  const { activeView, activeProjectId, setView, setProject, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
+  const { activeView, activeProjectId, activeAreaId, setView, setProject, setArea, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
   const { areas, projects, tasks, pendingMutations } = useNavigationData()
 
   return (
@@ -39,7 +39,7 @@ export function Sidebar() {
           {smartViews.map(({ id, label, icon: Icon }) => {
             const count = tasks.filter((task) => taskBelongsToView(task, id) && (id === 'logbook' || task.status !== 'completed')).length
             return (
-              <button key={id} className={`nav-item ${activeView === id && !activeProjectId ? 'nav-item--active' : ''}`} onClick={() => setView(id)}>
+              <button key={id} className={`nav-item ${activeView === id && !activeProjectId && !activeAreaId ? 'nav-item--active' : ''}`} onClick={() => setView(id)}>
                 <Icon size={19} strokeWidth={1.8} />
                 <span>{label}</span>
                 {count > 0 ? <span className="nav-item__count">{count}</span> : null}
@@ -59,11 +59,15 @@ export function Sidebar() {
             const collapsed = collapsedAreaIds.has(area.id)
             return (
               <div className="area" key={area.id}>
-                <button className="area__title" onClick={() => toggleArea(area.id)} aria-expanded={!collapsed}>
-                  {collapsed ? <ChevronRight size={15} /> : <ChevronDown size={15} />}
-                  {area.id === 'work' ? <BriefcaseBusiness size={17} style={{ color: area.color }} /> : <Sparkles size={17} style={{ color: area.color }} />}
-                  <span>{area.title}</span>
-                </button>
+                <div className="area__heading">
+                  <button className="area__toggle" onClick={() => toggleArea(area.id)} aria-expanded={!collapsed} aria-label={`${collapsed ? 'Expand' : 'Collapse'} ${area.title}`}>
+                    {collapsed ? <ChevronRight size={15} /> : <ChevronDown size={15} />}
+                  </button>
+                  <button className={`area__title ${activeAreaId === area.id ? 'area__title--active' : ''}`} onClick={() => setArea(area.id)} aria-current={activeAreaId === area.id ? 'page' : undefined}>
+                    {area.id === 'work' ? <BriefcaseBusiness size={17} style={{ color: area.color }} /> : <Sparkles size={17} style={{ color: area.color }} />}
+                    <span>{area.title}</span>
+                  </button>
+                </div>
                 {!collapsed ? <div className="area__projects">
                   {areaProjects.map((project) => {
                     const count = tasks.filter((task) => task.project_id === project.id && task.status !== 'completed' && !task.deleted_at).length

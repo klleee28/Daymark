@@ -1,18 +1,23 @@
 import { ArrowDownAZ, Check, FolderTree, ListOrdered, Menu, MoreHorizontal, Plus, Search } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useNavigationData, useTasks } from '../hooks/useDatabase'
 import { friendlyToday } from '../lib/date'
 import { viewTitle } from '../lib/taskFilters'
 import { useUIStore } from '../store/uiStore'
 import { ProgressRing } from './ProgressRing'
+import { AreaProjectList } from './AreaProjectList'
 import { TaskSection } from './TaskSection'
 
 export function MainView() {
-  const { activeView, activeProjectId, setQuickAddOpen, setSidebarOpen, setSearchOpen, moreMenuOpen, setMoreMenuOpen, sortMode, setSortMode } = useUIStore()
-  const { projects } = useNavigationData()
+  const { activeView, activeProjectId, activeAreaId, setProject, setProjectDialogOpen, setQuickAddOpen, setSidebarOpen, setSearchOpen, moreMenuOpen, setMoreMenuOpen, sortMode, setSortMode } = useUIStore()
+  const { areas, projects, tasks: allTasks } = useNavigationData()
   const tasks = useTasks(activeView, activeProjectId)
+  const mainRef = useRef<HTMLElement>(null)
   const activeProject = projects.find((project) => project.id === activeProjectId)
-  const completed = tasks.filter((task) => task.status === 'completed').length
+  const activeArea = areas.find((area) => area.id === activeAreaId)
+  const areaProjects = activeArea ? projects.filter((project) => project.area_id === activeArea.id) : []
+  const headerTasks = activeArea ? allTasks.filter((task) => task.area_id === activeArea.id) : tasks
+  const completed = headerTasks.filter((task) => task.status === 'completed').length
   const visibleTasks = useMemo(() => {
     const displayTasks = activeView === 'logbook' ? tasks : tasks.filter((task) => task.status !== 'completed')
     if (sortMode === 'title') return displayTasks.slice().sort((a, b) => a.title.localeCompare(b.title))
@@ -22,13 +27,17 @@ export function MainView() {
     }
     return displayTasks
   }, [activeView, projects, sortMode, tasks])
-  const title = activeProject?.title ?? viewTitle(activeView)
+  const title = activeProject?.title ?? activeArea?.title ?? viewTitle(activeView)
   const morning = activeView === 'today' ? visibleTasks.filter((task) => !task.is_evening).slice(0, 2) : visibleTasks
   const anytime = activeView === 'today' ? visibleTasks.filter((task) => !task.is_evening).slice(2) : []
   const evening = activeView === 'today' ? visibleTasks.filter((task) => task.is_evening) : []
 
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0
+  }, [activeAreaId, activeProjectId, activeView])
+
   return (
-    <main className="main-view">
+    <main ref={mainRef} className="main-view">
       <div className="main-view__toolbar">
         <button className="main-view__menu" onClick={() => setSidebarOpen(true)} aria-label="Open navigation"><Menu size={22} /></button>
         <span />
@@ -50,15 +59,17 @@ export function MainView() {
 
       <div className="content-wrap">
         <header className="page-header">
-          <ProgressRing completed={completed} total={tasks.length} />
+          <ProgressRing completed={completed} total={headerTasks.length} />
           <div>
             <h1>{title}</h1>
-            <p>{activeProject ? 'Project' : activeView === 'today' ? friendlyToday() : `${visibleTasks.length} open to-do${visibleTasks.length === 1 ? '' : 's'}`}</p>
+            <p>{activeProject ? 'Project' : activeArea ? `${areaProjects.length} project${areaProjects.length === 1 ? '' : 's'}` : activeView === 'today' ? friendlyToday() : `${visibleTasks.length} open to-do${visibleTasks.length === 1 ? '' : 's'}`}</p>
           </div>
         </header>
 
         <div className="task-list">
-          {visibleTasks.length ? (
+          {activeArea ? (
+            <AreaProjectList area={activeArea} projects={areaProjects} tasks={allTasks} onSelectProject={setProject} onAddProject={() => setProjectDialogOpen(true)} />
+          ) : visibleTasks.length ? (
             activeView === 'today' && !activeProjectId ? (
               <>
                 <TaskSection title="Morning" tone="morning" tasks={morning} projects={projects} />

@@ -6,7 +6,7 @@ import { useUIStore } from '../store/uiStore'
 const colors = ['#1768e5', '#7954d6', '#e26f4b', '#2e9a70', '#d39b25']
 
 export function AreaDialog() {
-  const { areaDialogOpen, setAreaDialogOpen } = useUIStore()
+  const { areaDialogOpen, setAreaDialogOpen, setArea } = useUIStore()
   const [title, setTitle] = useState('')
   const [color, setColor] = useState(colors[0])
   if (!areaDialogOpen) return null
@@ -14,10 +14,11 @@ export function AreaDialog() {
   async function submit() {
     const value = title.trim()
     if (!value) return
-    await createArea(value, color)
+    const area = await createArea(value, color)
     setTitle('')
     setColor(colors[0])
     setAreaDialogOpen(false)
+    setArea(area.id)
   }
 
   return (

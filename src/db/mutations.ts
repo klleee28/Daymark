@@ -1,7 +1,7 @@
 import { db } from './database'
 import { dateFromToday, todayKey } from '../lib/date'
 import type { SmartView } from '../lib/taskFilters'
-import type { Area, Task } from '../types/entities'
+import type { Area, Project, Task } from '../types/entities'
 
 function mutationId() {
   return crypto.randomUUID()
@@ -47,6 +47,19 @@ export async function createArea(title: string, color: string) {
     await db.sync_mutations.add({ id: mutationId(), entity: 'area', entity_id: area.id, action: 'create', payload: area as unknown as Record<string, unknown>, timestamp: now, synced: false })
   })
   return area
+}
+
+export async function createProject(title: string, areaId: string) {
+  const now = Date.now()
+  const project: Project = {
+    id: crypto.randomUUID(), area_id: areaId, title, notes: '', status: 'active',
+    when_date: null, deadline: null, order: now, created_at: now, updated_at: now, deleted_at: null
+  }
+  await db.transaction('rw', [db.projects, db.sync_mutations], async () => {
+    await db.projects.add(project)
+    await db.sync_mutations.add({ id: mutationId(), entity: 'project', entity_id: project.id, action: 'create', payload: project as unknown as Record<string, unknown>, timestamp: now, synced: false })
+  })
+  return project
 }
 
 export async function updateTask(task: Task, patch: Partial<Task>) {

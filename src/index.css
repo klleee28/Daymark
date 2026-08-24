@@ -40,7 +40,11 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
 .area-list { flex: 1; overflow: auto; padding: 10px 17px 76px; }
 .area { padding-bottom: 9px; border-bottom: 1px solid #e1e5eb; }
 .area:last-child { border-bottom: 0; }
-.area__title { display: grid; grid-template-columns: 15px 20px 1fr; align-items: center; gap: 7px; width: 100%; height: 41px; padding: 0; border: 0; background: transparent; color: #313844; font-size: 14px; font-weight: 660; text-align: left; cursor: pointer; }
+.area__heading { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; min-height: 41px; }
+.area__toggle { display: grid; place-items: center; width: 24px; height: 32px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #7a8492; cursor: pointer; }
+.area__toggle:hover { background: #e7ebf1; color: #303945; }
+.area__title { display: grid; grid-template-columns: 20px 1fr; align-items: center; gap: 7px; width: 100%; height: 36px; padding: 0 7px; border: 0; border-radius: 7px; background: transparent; color: #313844; font-size: 14px; font-weight: 660; text-align: left; cursor: pointer; }
+.area__title:hover, .area__title--active { background: #e7ebf1; color: #155ecf; }
 .area__projects { display: grid; gap: 1px; padding: 0 0 5px 42px; }
 .project-item { display: grid; grid-template-columns: 9px 1fr auto; align-items: center; gap: 10px; min-height: 33px; padding: 0 9px; border-radius: 7px; color: #505a69; font-size: 13.5px; text-align: left; }
 .project-item:hover, .project-item--active { background: #e7ebf1; color: #222a35; }
@@ -109,6 +113,23 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
 .empty-state__check { display: grid; place-items: center; width: 54px; height: 54px; margin-bottom: 18px; border: 1px solid #dfe4ea; border-radius: 50%; color: #71a2ec; font-size: 24px; }
 .empty-state h2 { margin: 0 0 7px; color: #39414c; font-size: 20px; }
 .empty-state p { margin: 0; font-size: 14px; }
+
+.area-page { display: grid; gap: 22px; }
+.area-page__toolbar { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 0 4px 15px; border-bottom: 1px solid #dfe4ea; }
+.area-page__toolbar h2 { margin: 0 0 4px; color: #303843; font-size: 18px; letter-spacing: -.01em; }
+.area-page__toolbar p { margin: 0; color: #7c8694; font-size: 13px; }
+.area-page__toolbar > button, .area-page__empty > button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 0 13px; border: 0; border-radius: 9px; background: var(--accent); color: white; font-size: 13px; font-weight: 680; cursor: pointer; }
+.area-project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.area-project-card { display: grid; grid-template-columns: 42px minmax(0, 1fr) 20px; align-items: center; gap: 12px; min-height: 78px; padding: 12px 14px; border: 1px solid #e0e5ec; border-radius: 12px; background: #fff; color: #6d7785; text-align: left; cursor: pointer; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+.area-project-card:hover { border-color: #b8cbea; box-shadow: 0 7px 22px rgba(28, 45, 70, .08); transform: translateY(-1px); }
+.area-project-card__icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: color-mix(in srgb, currentColor 10%, transparent); }
+.area-project-card__copy { display: grid; gap: 4px; min-width: 0; }
+.area-project-card strong { overflow: hidden; color: #303843; font-size: 14px; font-weight: 680; text-overflow: ellipsis; white-space: nowrap; }
+.area-project-card small { color: #808a98; font-size: 12px; }
+.area-page__empty { display: grid; justify-items: center; padding: 70px 20px; color: #7e8896; text-align: center; }
+.area-page__empty > span { display: grid; place-items: center; width: 58px; height: 58px; margin-bottom: 16px; border-radius: 16px; background: color-mix(in srgb, currentColor 10%, transparent); }
+.area-page__empty h3 { margin: 0 0 6px; color: #39414c; font-size: 19px; }
+.area-page__empty p { margin: 0 0 18px; font-size: 13px; }
 
 .floating-add { position: fixed; right: 43px; bottom: 35px; z-index: 20; display: grid; place-items: center; width: 62px; height: 62px; padding: 0; border: 0; border-radius: 50%; background: var(--accent); color: white; cursor: pointer; box-shadow: 0 12px 26px rgba(23, 104, 229, .28), 0 2px 6px rgba(28, 43, 68, .18); transition: transform 180ms ease, box-shadow 180ms ease; }
 .floating-add span { position: absolute; right: 74px; padding: 8px 10px; border: 1px solid #dfe4ea; border-radius: 7px; background: white; color: #525c69; font-size: 12px; white-space: nowrap; box-shadow: 0 3px 10px rgba(25, 38, 60, .08); opacity: 0; transform: translateX(4px); transition: 160ms ease; pointer-events: none; }
@@ -211,6 +232,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
   .task-note { margin-left: 6px; font-size: 13px; }
   .task-categorize { grid-template-columns: 1fr 1fr; }
   .task-categorize__tags { grid-column: 1 / -1; }
+  .area-project-grid { grid-template-columns: 1fr; }
   .floating-add { right: 23px; bottom: calc(89px + env(safe-area-inset-bottom)); width: 61px; height: 61px; }
   .floating-add span { display: none; }
   .mobile-tabs { position: fixed; inset: auto 0 0; z-index: 25; display: grid; grid-template-columns: repeat(4, 1fr); height: calc(72px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid #dfe4ea; background: rgba(255, 255, 255, .96); backdrop-filter: blur(18px); }
@@ -233,6 +255,8 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
   .task-list { gap: 27px; }
   .task-row__title { font-size: 15px; }
   .quick-add__fields { grid-template-columns: 1fr; }
+  .area-page__toolbar { align-items: flex-start; }
+  .area-page__toolbar > button { flex: 0 0 auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -246,7 +270,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
   .sidebar__section-title, .area, .sidebar__footer { border-color: #2b3038; }
   .sidebar__footer { background: rgba(23, 27, 33, .94); }
   .nav-item, .project-item, .area__title { color: #b8c0cb; }
-  .nav-item:hover, .project-item:hover, .project-item--active { background: #242a33; color: #f1f3f6; }
+  .nav-item:hover, .project-item:hover, .project-item--active, .area__title:hover, .area__title--active, .area__toggle:hover { background: #242a33; color: #f1f3f6; }
   .nav-item--active { background: #1b3150; color: #75a9f4; }
   .main-view__toolbar { background: rgba(18, 21, 26, .88); }
   .progress-ring::before, .task-check span, .checklist-item__check { background: #12151a; }
@@ -274,7 +298,10 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
 :root[data-theme="dark"] .area__title { color: #b8c0cb; }
 :root[data-theme="dark"] .nav-item:hover,
 :root[data-theme="dark"] .project-item:hover,
-:root[data-theme="dark"] .project-item--active { background: #242a33; color: #f1f3f6; }
+:root[data-theme="dark"] .project-item--active,
+:root[data-theme="dark"] .area__title:hover,
+:root[data-theme="dark"] .area__title--active,
+:root[data-theme="dark"] .area__toggle:hover { background: #242a33; color: #f1f3f6; }
 :root[data-theme="dark"] .nav-item--active { background: #1b3150; color: #75a9f4; }
 :root[data-theme="dark"] .main-view__toolbar { background: rgba(18, 21, 26, .88); }
 :root[data-theme="dark"] .progress-ring::before,
@@ -295,6 +322,11 @@ button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb
 :root[data-theme="dark"] .settings-dialog,
 :root[data-theme="dark"] .area-dialog,
 :root[data-theme="dark"] .theme-options button { border-color: #333a45; background: #1b2027; color: #dce1e8; }
+:root[data-theme="dark"] .area-page__toolbar { border-color: #2c323a; }
+:root[data-theme="dark"] .area-page__toolbar h2,
+:root[data-theme="dark"] .area-project-card strong,
+:root[data-theme="dark"] .area-page__empty h3 { color: #edf0f4; }
+:root[data-theme="dark"] .area-project-card { border-color: #333a45; background: #1b2027; color: #aab3bf; }
 :root[data-theme="dark"] .quick-add input,
 :root[data-theme="dark"] .search-dialog header input,
 :root[data-theme="dark"] .area-dialog > label input,
