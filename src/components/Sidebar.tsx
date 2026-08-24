@@ -4,7 +4,7 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ChevronDown,
-  CircleDashed,
+  ChevronRight,
   Inbox,
   Layers3,
   Plus,
@@ -27,7 +27,7 @@ const smartViews: Array<{ id: SmartView; label: string; icon: typeof Inbox }> = 
 ]
 
 export function Sidebar() {
-  const { activeView, activeProjectId, setView, setProject, sidebarOpen, setSidebarOpen } = useUIStore()
+  const { activeView, activeProjectId, setView, setProject, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
   const { areas, projects, tasks, pendingMutations } = useNavigationData()
 
   return (
@@ -50,20 +50,21 @@ export function Sidebar() {
 
         <div className="sidebar__section-title">
           <span>Areas</span>
-          <button aria-label="Add an area"><Plus size={17} /></button>
+          <button aria-label="Add an area" onClick={() => setAreaDialogOpen(true)}><Plus size={17} /></button>
         </div>
 
         <div className="area-list">
           {areas.map((area) => {
             const areaProjects = projects.filter((project) => project.area_id === area.id)
+            const collapsed = collapsedAreaIds.has(area.id)
             return (
               <div className="area" key={area.id}>
-                <div className="area__title">
-                  <ChevronDown size={15} />
+                <button className="area__title" onClick={() => toggleArea(area.id)} aria-expanded={!collapsed}>
+                  {collapsed ? <ChevronRight size={15} /> : <ChevronDown size={15} />}
                   {area.id === 'work' ? <BriefcaseBusiness size={17} style={{ color: area.color }} /> : <Sparkles size={17} style={{ color: area.color }} />}
                   <span>{area.title}</span>
-                </div>
-                <div className="area__projects">
+                </button>
+                {!collapsed ? <div className="area__projects">
                   {areaProjects.map((project) => {
                     const count = tasks.filter((task) => task.project_id === project.id && task.status !== 'completed' && !task.deleted_at).length
                     return (
@@ -74,7 +75,7 @@ export function Sidebar() {
                       </button>
                     )
                   })}
-                </div>
+                </div> : null}
               </div>
             )
           })}
@@ -85,7 +86,7 @@ export function Sidebar() {
             <span className={`sync-status__dot ${pendingMutations ? 'sync-status__dot--pending' : ''}`} />
             <span>{pendingMutations ? `${pendingMutations} local change${pendingMutations === 1 ? '' : 's'}` : 'All changes synced'}</span>
           </div>
-          <button aria-label="Settings"><Settings2 size={18} /></button>
+          <button aria-label="Settings" onClick={() => setSettingsOpen(true)}><Settings2 size={18} /></button>
         </div>
       </aside>
     </>

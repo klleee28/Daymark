@@ -58,6 +58,7 @@ export interface Task {
   tags: string[]
   recurrence_rule?: string | null
   completed_at?: number | null
+  completed_from_status?: Exclude<TaskStatus, 'completed'> | null
   order: number
   created_at: number
   updated_at: number
