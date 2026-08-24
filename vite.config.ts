@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/second-brain/',
+  base: '/Daymark/',
   plugins: [
     react(),
     tailwindcss(),
@@ -19,15 +19,15 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: '/second-brain/',
+        start_url: '/Daymark/',
         icons: [
-          { src: '/second-brain/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-          { src: '/second-brain/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
-          { src: '/second-brain/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }
+          { src: '/Daymark/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/Daymark/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          { src: '/Daymark/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }
         ]
       },
       workbox: {
-        navigateFallback: '/second-brain/index.html',
+        navigateFallback: '/Daymark/index.html',
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/api/sync'),
