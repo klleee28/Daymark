@@ -1,6 +1,6 @@
-# Daymark
+# Second Brain
 
-Daymark is a local-first personal task manager inspired by the calm workflow and visual hierarchy of Things 3. This first milestone delivers the PWA shell, Dexie persistence, reactive data hooks, core smart-list and project navigation, task completion, checklist interaction, and responsive quick capture.
+Second-brain is a local-first personal task manager inspired by the calm workflow and visual hierarchy of Things 3. This first milestone delivers the PWA shell, Dexie persistence, reactive data hooks, core smart-list and project navigation, task completion, checklist interaction, and responsive quick capture.
 
 ## Included in this milestone
 
