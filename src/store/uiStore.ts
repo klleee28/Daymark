@@ -17,6 +17,7 @@ interface UIState {
   settingsOpen: boolean
   areaDialogOpen: boolean
   projectDialogOpen: boolean
+  clearLogbookOpen: boolean
   moreMenuOpen: boolean
   themeMode: ThemeMode
   sortMode: SortMode
@@ -35,6 +36,7 @@ interface UIState {
   setSettingsOpen: (open: boolean) => void
   setAreaDialogOpen: (open: boolean) => void
   setProjectDialogOpen: (open: boolean) => void
+  setClearLogbookOpen: (open: boolean) => void
   setMoreMenuOpen: (open: boolean) => void
   setThemeMode: (mode: ThemeMode) => void
   setSortMode: (mode: SortMode) => void
@@ -56,6 +58,7 @@ export const useUIStore = create<UIState>((set) => ({
   settingsOpen: false,
   areaDialogOpen: false,
   projectDialogOpen: false,
+  clearLogbookOpen: false,
   moreMenuOpen: false,
   themeMode: (localStorage.getItem('daymark-theme') as ThemeMode | null) ?? 'system',
   sortMode: 'manual',
@@ -74,6 +77,7 @@ export const useUIStore = create<UIState>((set) => ({
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setAreaDialogOpen: (areaDialogOpen) => set({ areaDialogOpen }),
   setProjectDialogOpen: (projectDialogOpen) => set({ projectDialogOpen }),
+  setClearLogbookOpen: (clearLogbookOpen) => set({ clearLogbookOpen }),
   setMoreMenuOpen: (moreMenuOpen) => set({ moreMenuOpen }),
   setThemeMode: (themeMode) => {
     localStorage.setItem('daymark-theme', themeMode)

@@ -1,4 +1,4 @@
-import { ArrowDownAZ, Check, FolderTree, ListOrdered, Menu, MoreHorizontal, Plus, Search, Settings2 } from 'lucide-react'
+import { ArrowDownAZ, Check, FolderTree, ListOrdered, Menu, MoreHorizontal, Plus, Search, Settings2, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigationData, useTasks } from '../hooks/useDatabase'
 import { friendlyToday } from '../lib/date'
@@ -9,7 +9,7 @@ import { AreaProjectList } from './AreaProjectList'
 import { TaskSection } from './TaskSection'
 
 export function MainView() {
-  const { activeView, activeProjectId, activeAreaId, setProject, setManagedProjectId, setProjectDialogOpen, setQuickAddOpen, setSidebarOpen, setSearchOpen, moreMenuOpen, setMoreMenuOpen, sortMode, setSortMode } = useUIStore()
+  const { activeView, activeProjectId, activeAreaId, setProject, setManagedProjectId, setProjectDialogOpen, setClearLogbookOpen, setQuickAddOpen, setSidebarOpen, setSearchOpen, moreMenuOpen, setMoreMenuOpen, sortMode, setSortMode } = useUIStore()
   const { areas, projects, tasks: allTasks } = useNavigationData()
   const tasks = useTasks(activeView, activeProjectId)
   const mainRef = useRef<HTMLElement>(null)
@@ -62,9 +62,10 @@ export function MainView() {
           <ProgressRing completed={completed} total={headerTasks.length} />
           <div className="page-header__copy">
             <h1>{title}</h1>
-            <p>{activeProject ? (activeProject.notes || 'Project') : activeArea ? `${areaProjects.length} project${areaProjects.length === 1 ? '' : 's'}` : activeView === 'today' ? friendlyToday() : activeView === 'logbook' ? `${visibleTasks.length} completed to-do${visibleTasks.length === 1 ? '' : 's'}` : `${visibleTasks.length} open to-do${visibleTasks.length === 1 ? '' : 's'}`}</p>
+            <p>{activeProject ? (activeProject.notes || 'Project') : activeArea ? `${areaProjects.length} project${areaProjects.length === 1 ? '' : 's'}` : activeView === 'today' ? friendlyToday() : activeView === 'logbook' ? `${visibleTasks.length} completed to-do${visibleTasks.length === 1 ? '' : 's'} · 90-day history` : `${visibleTasks.length} open to-do${visibleTasks.length === 1 ? '' : 's'}`}</p>
           </div>
           {activeProject ? <button className="page-header__manage" onClick={() => setManagedProjectId(activeProject.id)}><Settings2 size={16} />Edit project</button> : null}
+          {!activeProject && !activeArea && activeView === 'logbook' ? <button className="page-header__manage page-header__clear" onClick={() => setClearLogbookOpen(true)} disabled={visibleTasks.length === 0}><Trash2 size={16} />Clear Logbook</button> : null}
         </header>
 
         <div className="task-list">
@@ -81,8 +82,8 @@ export function MainView() {
           ) : (
             <div className="empty-state">
               <span className="empty-state__check">✓</span>
-              <h2>You’re all clear</h2>
-              <p>Capture something new or enjoy the breathing room.</p>
+              <h2>{activeView === 'logbook' ? 'Logbook is empty' : 'You’re all clear'}</h2>
+              <p>{activeView === 'logbook' ? 'Completed to-dos remain here for 90 days.' : 'Capture something new or enjoy the breathing room.'}</p>
             </div>
           )}
         </div>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { AreaDialog } from '../components/AreaDialog'
 import { AreaManageDialog } from '../components/AreaManageDialog'
+import { ClearLogbookDialog } from '../components/ClearLogbookDialog'
 import { MainView } from '../components/MainView'
 import { MobileTabBar } from '../components/MobileTabBar'
 import { QuickAddSheet } from '../components/QuickAddSheet'
@@ -13,7 +14,7 @@ import { TaskManageDialog } from '../components/TaskManageDialog'
 import { useUIStore } from '../store/uiStore'
 
 export function App() {
-  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setManagedAreaId, setManagedProjectId, setManagedTaskId, setMoreMenuOpen, themeMode } = useUIStore()
+  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setClearLogbookOpen, setManagedAreaId, setManagedProjectId, setManagedTaskId, setMoreMenuOpen, themeMode } = useUIStore()
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-color-scheme: dark)')
@@ -43,6 +44,7 @@ export function App() {
         setSettingsOpen(false)
         setAreaDialogOpen(false)
         setProjectDialogOpen(false)
+        setClearLogbookOpen(false)
         setManagedAreaId(null)
         setManagedProjectId(null)
         setManagedTaskId(null)
@@ -51,7 +53,7 @@ export function App() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [setAreaDialogOpen, setManagedAreaId, setManagedProjectId, setManagedTaskId, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
+  }, [setAreaDialogOpen, setClearLogbookOpen, setManagedAreaId, setManagedProjectId, setManagedTaskId, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
 
   return (
     <div className="app-shell">
@@ -63,6 +65,7 @@ export function App() {
       <SettingsDialog />
       <AreaDialog />
       <AreaManageDialog />
+      <ClearLogbookDialog />
       <ProjectDialog />
       <ProjectManageDialog />
       <TaskManageDialog />
