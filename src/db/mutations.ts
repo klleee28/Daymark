@@ -96,12 +96,62 @@ export async function createProject(title: string, areaId: string) {
   return project
 }
 
+export async function updateProject(project: Project, patch: Partial<Project>) {
+  const now = Date.now()
+  const payload = { ...patch, updated_at: now }
+  await db.transaction('rw', [db.projects, db.tasks, db.sync_mutations], async () => {
+    await db.projects.update(project.id, payload)
+
+    if (patch.area_id !== undefined && patch.area_id !== project.area_id) {
+      const projectTasks = await db.tasks.where('project_id').equals(project.id).filter((task) => !task.deleted_at).toArray()
+      if (projectTasks.length) {
+        const taskPatch = { area_id: patch.area_id ?? null, updated_at: now }
+        await db.tasks.bulkUpdate(projectTasks.map((task) => ({ key: task.id, changes: taskPatch })))
+        await db.sync_mutations.bulkAdd(projectTasks.map((task) => ({
+          id: mutationId(), entity: 'task' as const, entity_id: task.id, action: 'update' as const,
+          payload: taskPatch, timestamp: now, synced: false
+        })))
+      }
+    }
+
+    await db.sync_mutations.add({ id: mutationId(), entity: 'project', entity_id: project.id, action: 'update', payload, timestamp: now, synced: false })
+  })
+}
+
+export async function deleteProject(project: Project) {
+  const now = Date.now()
+  const tasks = await db.tasks.where('project_id').equals(project.id).filter((task) => !task.deleted_at).toArray()
+  const headings = await db.headings.where('project_id').equals(project.id).filter((heading) => !heading.deleted_at).toArray()
+  const patch = { deleted_at: now, updated_at: now }
+  const mutations: SyncMutation[] = [
+    { id: mutationId(), entity: 'project', entity_id: project.id, action: 'delete', payload: patch, timestamp: now, synced: false },
+    ...headings.map((heading) => ({ id: mutationId(), entity: 'heading' as const, entity_id: heading.id, action: 'delete' as const, payload: patch, timestamp: now, synced: false })),
+    ...tasks.map((task) => ({ id: mutationId(), entity: 'task' as const, entity_id: task.id, action: 'delete' as const, payload: patch, timestamp: now, synced: false }))
+  ]
+
+  await db.transaction('rw', [db.projects, db.headings, db.tasks, db.sync_mutations], async () => {
+    await db.projects.update(project.id, patch)
+    if (headings.length) await db.headings.bulkUpdate(headings.map((heading) => ({ key: heading.id, changes: patch })))
+    if (tasks.length) await db.tasks.bulkUpdate(tasks.map((task) => ({ key: task.id, changes: patch })))
+    await db.sync_mutations.bulkAdd(mutations)
+  })
+}
+
 export async function updateTask(task: Task, patch: Partial<Task>) {
   const now = Date.now()
   const payload = { ...patch, updated_at: now }
   await db.transaction('rw', [db.tasks, db.sync_mutations], async () => {
     await db.tasks.update(task.id, payload)
     await db.sync_mutations.add({ id: mutationId(), entity: 'task', entity_id: task.id, action: 'update', payload, timestamp: now, synced: false })
+  })
+}
+
+export async function deleteTask(task: Task) {
+  const now = Date.now()
+  const patch = { deleted_at: now, updated_at: now }
+  await db.transaction('rw', [db.tasks, db.sync_mutations], async () => {
+    await db.tasks.update(task.id, patch)
+    await db.sync_mutations.add({ id: mutationId(), entity: 'task', entity_id: task.id, action: 'delete', payload: patch, timestamp: now, synced: false })
   })
 }
 

@@ -5,17 +5,26 @@ import { MainView } from '../components/MainView'
 import { MobileTabBar } from '../components/MobileTabBar'
 import { QuickAddSheet } from '../components/QuickAddSheet'
 import { ProjectDialog } from '../components/ProjectDialog'
+import { ProjectManageDialog } from '../components/ProjectManageDialog'
 import { SearchDialog } from '../components/SearchDialog'
 import { SettingsDialog } from '../components/SettingsDialog'
 import { Sidebar } from '../components/Sidebar'
+import { TaskManageDialog } from '../components/TaskManageDialog'
 import { useUIStore } from '../store/uiStore'
 
 export function App() {
-  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setManagedAreaId, setMoreMenuOpen, themeMode } = useUIStore()
+  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setManagedAreaId, setManagedProjectId, setManagedTaskId, setMoreMenuOpen, themeMode } = useUIStore()
 
   useEffect(() => {
-    document.documentElement.dataset.theme = themeMode
-    document.documentElement.style.colorScheme = themeMode === 'system' ? 'light dark' : themeMode
+    const preference = window.matchMedia('(prefers-color-scheme: dark)')
+    const applyTheme = () => {
+      const resolvedTheme = themeMode === 'system' ? (preference.matches ? 'dark' : 'light') : themeMode
+      document.documentElement.dataset.theme = resolvedTheme
+      document.documentElement.style.colorScheme = resolvedTheme
+    }
+    applyTheme()
+    if (themeMode === 'system') preference.addEventListener('change', applyTheme)
+    return () => preference.removeEventListener('change', applyTheme)
   }, [themeMode])
 
   useEffect(() => {
@@ -35,12 +44,14 @@ export function App() {
         setAreaDialogOpen(false)
         setProjectDialogOpen(false)
         setManagedAreaId(null)
+        setManagedProjectId(null)
+        setManagedTaskId(null)
         setMoreMenuOpen(false)
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [setAreaDialogOpen, setManagedAreaId, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
+  }, [setAreaDialogOpen, setManagedAreaId, setManagedProjectId, setManagedTaskId, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
 
   return (
     <div className="app-shell">
@@ -53,6 +64,8 @@ export function App() {
       <AreaDialog />
       <AreaManageDialog />
       <ProjectDialog />
+      <ProjectManageDialog />
+      <TaskManageDialog />
     </div>
   )
 }

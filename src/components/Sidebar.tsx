@@ -28,7 +28,7 @@ const smartViews: Array<{ id: SmartView; label: string; icon: typeof Inbox }> = 
 ]
 
 export function Sidebar() {
-  const { activeView, activeProjectId, activeAreaId, setView, setProject, setArea, setManagedAreaId, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
+  const { activeView, activeProjectId, activeAreaId, setView, setProject, setArea, setManagedAreaId, setManagedProjectId, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
   const { areas, projects, tasks, pendingMutations } = useNavigationData()
 
   return (
@@ -74,11 +74,14 @@ export function Sidebar() {
                   {areaProjects.map((project) => {
                     const count = tasks.filter((task) => task.project_id === project.id && task.status !== 'completed' && !task.deleted_at).length
                     return (
-                      <button key={project.id} className={`project-item ${activeProjectId === project.id ? 'project-item--active' : ''}`} onClick={() => setProject(project.id)}>
-                        <span className="project-item__dot" style={{ background: area.color }} />
-                        <span>{project.title}</span>
-                        {count ? <span className="nav-item__count">{count}</span> : null}
-                      </button>
+                      <div className="project-item-wrap" key={project.id}>
+                        <button className={`project-item ${activeProjectId === project.id ? 'project-item--active' : ''}`} onClick={() => setProject(project.id)}>
+                          <span className="project-item__dot" style={{ background: area.color }} />
+                          <span>{project.title}</span>
+                          {count ? <span className="nav-item__count">{count}</span> : null}
+                        </button>
+                        <button className="project-item__manage" onClick={() => setManagedProjectId(project.id)} aria-label={`Manage ${project.title}`}><MoreHorizontal size={16} /></button>
+                      </div>
                     )
                   })}
                 </div> : null}
@@ -90,7 +93,7 @@ export function Sidebar() {
         <div className="sidebar__footer">
           <div className="sync-status">
             <span className={`sync-status__dot ${pendingMutations ? 'sync-status__dot--pending' : ''}`} />
-            <span>{pendingMutations ? `${pendingMutations} local change${pendingMutations === 1 ? '' : 's'}` : 'All changes synced'}</span>
+            <span>{pendingMutations ? `${pendingMutations} local change${pendingMutations === 1 ? '' : 's'}` : 'Stored on this device'}</span>
           </div>
           <button aria-label="Settings" onClick={() => setSettingsOpen(true)}><Settings2 size={18} /></button>
         </div>

@@ -9,6 +9,8 @@ interface UIState {
   activeProjectId: string | null
   activeAreaId: string | null
   managedAreaId: string | null
+  managedProjectId: string | null
+  managedTaskId: string | null
   quickAddOpen: boolean
   sidebarOpen: boolean
   searchOpen: boolean
@@ -25,6 +27,8 @@ interface UIState {
   setProject: (projectId: string) => void
   setArea: (areaId: string) => void
   setManagedAreaId: (areaId: string | null) => void
+  setManagedProjectId: (projectId: string | null) => void
+  setManagedTaskId: (taskId: string | null) => void
   setQuickAddOpen: (open: boolean) => void
   setSidebarOpen: (open: boolean) => void
   setSearchOpen: (open: boolean) => void
@@ -44,6 +48,8 @@ export const useUIStore = create<UIState>((set) => ({
   activeProjectId: null,
   activeAreaId: null,
   managedAreaId: null,
+  managedProjectId: null,
+  managedTaskId: null,
   quickAddOpen: false,
   sidebarOpen: false,
   searchOpen: false,
@@ -60,6 +66,8 @@ export const useUIStore = create<UIState>((set) => ({
   setProject: (activeProjectId) => set({ activeProjectId, activeAreaId: null, sidebarOpen: false }),
   setArea: (activeAreaId) => set({ activeAreaId, activeProjectId: null, sidebarOpen: false }),
   setManagedAreaId: (managedAreaId) => set({ managedAreaId }),
+  setManagedProjectId: (managedProjectId) => set({ managedProjectId }),
+  setManagedTaskId: (managedTaskId) => set({ managedTaskId }),
   setQuickAddOpen: (quickAddOpen) => set({ quickAddOpen }),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setSearchOpen: (searchOpen) => set({ searchOpen }),

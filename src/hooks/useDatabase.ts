@@ -14,7 +14,7 @@ export function useNavigationData() {
 export function useTasks(view: SmartView, projectId: string | null) {
   return useLiveQuery(async () => {
     const all = await db.tasks.orderBy('order').toArray()
-    if (projectId) return all.filter((task) => task.project_id === projectId && !task.deleted_at && task.status !== 'completed')
+    if (projectId) return all.filter((task) => task.project_id === projectId && !task.deleted_at)
     return all.filter((task) => taskBelongsToView(task, view))
   }, [view, projectId], [])
 }

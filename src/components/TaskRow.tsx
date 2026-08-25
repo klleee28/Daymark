@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronDown, ChevronRight, FileText, Folder, Tag } from 'lucide-react'
+import { CalendarDays, ChevronDown, ChevronRight, FileText, Folder, MoreHorizontal, Tag } from 'lucide-react'
 import { categorizeTask, moveTaskToView, toggleChecklistItem, toggleTask, updateTask } from '../db/mutations'
 import { dateFromToday, todayKey } from '../lib/date'
 import type { SmartView } from '../lib/taskFilters'
@@ -29,6 +29,7 @@ function scheduleLabel(task: Task) {
 export function TaskRow({ task, project, projects }: TaskRowProps) {
   const expanded = useUIStore((state) => state.expandedTaskIds.has(task.id))
   const toggleExpandedTask = useUIStore((state) => state.toggleExpandedTask)
+  const setManagedTaskId = useUIStore((state) => state.setManagedTaskId)
 
   return (
     <article className={`task-row ${expanded ? 'task-row--expanded' : ''}`}>
@@ -45,6 +46,7 @@ export function TaskRow({ task, project, projects }: TaskRowProps) {
           {task.tags.length ? <span><Tag size={14} />{task.tags[0]}</span> : null}
           {task.when_date ? <span><CalendarDays size={14} />{scheduleLabel(task)}</span> : null}
         </div>
+        <button className="task-row__manage" onClick={() => setManagedTaskId(task.id)} aria-label={`Edit ${task.title}`}><MoreHorizontal size={18} /></button>
       </div>
 
       {expanded ? (

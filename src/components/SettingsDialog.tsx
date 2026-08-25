@@ -34,7 +34,7 @@ export function SettingsDialog() {
         <div className="settings-group settings-status">
           <h3>Local-first storage</h3>
           <p>Your tasks are saved instantly on this device and remain available offline.</p>
-          <span><i className={pendingMutations ? 'is-pending' : ''} />{pendingMutations ? `${pendingMutations} change${pendingMutations === 1 ? '' : 's'} waiting for backend sync` : 'Local data is up to date'}</span>
+          <span><i className={pendingMutations ? 'is-pending' : ''} />{pendingMutations ? `${pendingMutations} local change${pendingMutations === 1 ? '' : 's'} saved on this device` : 'Local data is up to date'}</span>
         </div>
         <button className="dialog-done" onClick={() => setSettingsOpen(false)}>Done</button>
       </section>

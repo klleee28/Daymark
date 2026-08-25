@@ -1,4 +1,4 @@
-import { ChevronRight, FolderPlus, Plus } from 'lucide-react'
+import { ChevronRight, FolderPlus, MoreHorizontal, Plus } from 'lucide-react'
 import { useMemo } from 'react'
 import type { Area, Project, Task } from '../types/entities'
 
@@ -7,10 +7,11 @@ interface AreaProjectListProps {
   projects: Project[]
   tasks: Task[]
   onSelectProject: (projectId: string) => void
+  onManageProject: (projectId: string) => void
   onAddProject: () => void
 }
 
-export function AreaProjectList({ area, projects, tasks, onSelectProject, onAddProject }: AreaProjectListProps) {
+export function AreaProjectList({ area, projects, tasks, onSelectProject, onManageProject, onAddProject }: AreaProjectListProps) {
   const openCountByProject = useMemo(() => {
     const counts = new Map<string, number>()
     for (const task of tasks) {
@@ -36,14 +37,17 @@ export function AreaProjectList({ area, projects, tasks, onSelectProject, onAddP
           {projects.map((project) => {
             const openCount = openCountByProject.get(project.id) ?? 0
             return (
-              <button key={project.id} className="area-project-card" onClick={() => onSelectProject(project.id)} aria-label={`Open ${project.title} project`}>
-                <span className="area-project-card__icon" style={{ color: area.color }}><FolderPlus size={20} /></span>
-                <span className="area-project-card__copy">
-                  <strong>{project.title}</strong>
-                  <small>{openCount} open to-do{openCount === 1 ? '' : 's'}</small>
-                </span>
-                <ChevronRight size={18} />
-              </button>
+              <article key={project.id} className="area-project-card">
+                <button className="area-project-card__open" onClick={() => onSelectProject(project.id)} aria-label={`Open ${project.title} project`}>
+                  <span className="area-project-card__icon" style={{ color: area.color }}><FolderPlus size={20} /></span>
+                  <span className="area-project-card__copy">
+                    <strong>{project.title}</strong>
+                    <small>{openCount} open to-do{openCount === 1 ? '' : 's'}</small>
+                  </span>
+                  <ChevronRight size={18} />
+                </button>
+                <button className="area-project-card__manage" onClick={() => onManageProject(project.id)} aria-label={`Manage ${project.title}`}><MoreHorizontal size={18} /></button>
+              </article>
             )
           })}
         </div>
