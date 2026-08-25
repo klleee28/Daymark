@@ -8,6 +8,7 @@ interface UIState {
   activeView: SmartView
   activeProjectId: string | null
   activeAreaId: string | null
+  managedAreaId: string | null
   quickAddOpen: boolean
   sidebarOpen: boolean
   searchOpen: boolean
@@ -23,6 +24,7 @@ interface UIState {
   setView: (view: SmartView) => void
   setProject: (projectId: string) => void
   setArea: (areaId: string) => void
+  setManagedAreaId: (areaId: string | null) => void
   setQuickAddOpen: (open: boolean) => void
   setSidebarOpen: (open: boolean) => void
   setSearchOpen: (open: boolean) => void
@@ -41,6 +43,7 @@ export const useUIStore = create<UIState>((set) => ({
   activeView: 'today',
   activeProjectId: null,
   activeAreaId: null,
+  managedAreaId: null,
   quickAddOpen: false,
   sidebarOpen: false,
   searchOpen: false,
@@ -56,6 +59,7 @@ export const useUIStore = create<UIState>((set) => ({
   setView: (activeView) => set({ activeView, activeProjectId: null, activeAreaId: null, sidebarOpen: false }),
   setProject: (activeProjectId) => set({ activeProjectId, activeAreaId: null, sidebarOpen: false }),
   setArea: (activeAreaId) => set({ activeAreaId, activeProjectId: null, sidebarOpen: false }),
+  setManagedAreaId: (managedAreaId) => set({ managedAreaId }),
   setQuickAddOpen: (quickAddOpen) => set({ quickAddOpen }),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setSearchOpen: (searchOpen) => set({ searchOpen }),

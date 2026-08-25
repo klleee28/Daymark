@@ -1,7 +1,7 @@
 import { db } from './database'
 import { dateFromToday, todayKey } from '../lib/date'
 import type { SmartView } from '../lib/taskFilters'
-import type { Area, Project, Task } from '../types/entities'
+import type { Area, Project, SyncMutation, Task } from '../types/entities'
 
 function mutationId() {
   return crypto.randomUUID()
@@ -47,6 +47,40 @@ export async function createArea(title: string, color: string) {
     await db.sync_mutations.add({ id: mutationId(), entity: 'area', entity_id: area.id, action: 'create', payload: area as unknown as Record<string, unknown>, timestamp: now, synced: false })
   })
   return area
+}
+
+export async function renameArea(area: Area, title: string) {
+  const now = Date.now()
+  const patch = { title, updated_at: now }
+  await db.transaction('rw', [db.areas, db.sync_mutations], async () => {
+    await db.areas.update(area.id, patch)
+    await db.sync_mutations.add({ id: mutationId(), entity: 'area', entity_id: area.id, action: 'update', payload: patch, timestamp: now, synced: false })
+  })
+}
+
+export async function deleteArea(area: Area) {
+  const now = Date.now()
+  const projects = await db.projects.where('area_id').equals(area.id).filter((project) => !project.deleted_at).toArray()
+  const tasks = await db.tasks.where('area_id').equals(area.id).filter((task) => !task.deleted_at).toArray()
+  const projectIds = projects.map((project) => project.id)
+  const headings = projectIds.length
+    ? await db.headings.where('project_id').anyOf(projectIds).filter((heading) => !heading.deleted_at).toArray()
+    : []
+  const patch = { deleted_at: now, updated_at: now }
+  const mutations: SyncMutation[] = [
+    { id: mutationId(), entity: 'area', entity_id: area.id, action: 'delete', payload: patch, timestamp: now, synced: false },
+    ...projects.map((project) => ({ id: mutationId(), entity: 'project' as const, entity_id: project.id, action: 'delete' as const, payload: patch, timestamp: now, synced: false })),
+    ...headings.map((heading) => ({ id: mutationId(), entity: 'heading' as const, entity_id: heading.id, action: 'delete' as const, payload: patch, timestamp: now, synced: false })),
+    ...tasks.map((task) => ({ id: mutationId(), entity: 'task' as const, entity_id: task.id, action: 'delete' as const, payload: patch, timestamp: now, synced: false }))
+  ]
+
+  await db.transaction('rw', [db.areas, db.projects, db.headings, db.tasks, db.sync_mutations], async () => {
+    await db.areas.update(area.id, patch)
+    if (projects.length) await db.projects.bulkUpdate(projects.map((project) => ({ key: project.id, changes: patch })))
+    if (headings.length) await db.headings.bulkUpdate(headings.map((heading) => ({ key: heading.id, changes: patch })))
+    if (tasks.length) await db.tasks.bulkUpdate(tasks.map((task) => ({ key: task.id, changes: patch })))
+    await db.sync_mutations.bulkAdd(mutations)
+  })
 }
 
 export async function createProject(title: string, areaId: string) {

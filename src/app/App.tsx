@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { AreaDialog } from '../components/AreaDialog'
+import { AreaManageDialog } from '../components/AreaManageDialog'
 import { MainView } from '../components/MainView'
 import { MobileTabBar } from '../components/MobileTabBar'
 import { QuickAddSheet } from '../components/QuickAddSheet'
@@ -10,7 +11,7 @@ import { Sidebar } from '../components/Sidebar'
 import { useUIStore } from '../store/uiStore'
 
 export function App() {
-  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setMoreMenuOpen, themeMode } = useUIStore()
+  const { setQuickAddOpen, setSearchOpen, setSettingsOpen, setAreaDialogOpen, setProjectDialogOpen, setManagedAreaId, setMoreMenuOpen, themeMode } = useUIStore()
 
   useEffect(() => {
     document.documentElement.dataset.theme = themeMode
@@ -33,12 +34,13 @@ export function App() {
         setSettingsOpen(false)
         setAreaDialogOpen(false)
         setProjectDialogOpen(false)
+        setManagedAreaId(null)
         setMoreMenuOpen(false)
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [setAreaDialogOpen, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
+  }, [setAreaDialogOpen, setManagedAreaId, setMoreMenuOpen, setProjectDialogOpen, setQuickAddOpen, setSearchOpen, setSettingsOpen])
 
   return (
     <div className="app-shell">
@@ -49,6 +51,7 @@ export function App() {
       <SearchDialog />
       <SettingsDialog />
       <AreaDialog />
+      <AreaManageDialog />
       <ProjectDialog />
     </div>
   )

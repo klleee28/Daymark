@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Inbox,
   Layers3,
+  MoreHorizontal,
   Plus,
   Settings2,
   Sparkles,
@@ -27,7 +28,7 @@ const smartViews: Array<{ id: SmartView; label: string; icon: typeof Inbox }> = 
 ]
 
 export function Sidebar() {
-  const { activeView, activeProjectId, activeAreaId, setView, setProject, setArea, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
+  const { activeView, activeProjectId, activeAreaId, setView, setProject, setArea, setManagedAreaId, sidebarOpen, setSidebarOpen, setAreaDialogOpen, setSettingsOpen, collapsedAreaIds, toggleArea } = useUIStore()
   const { areas, projects, tasks, pendingMutations } = useNavigationData()
 
   return (
@@ -67,6 +68,7 @@ export function Sidebar() {
                     {area.id === 'work' ? <BriefcaseBusiness size={17} style={{ color: area.color }} /> : <Sparkles size={17} style={{ color: area.color }} />}
                     <span>{area.title}</span>
                   </button>
+                  <button className="area__actions" onClick={() => setManagedAreaId(area.id)} aria-label={`Manage ${area.title}`}><MoreHorizontal size={17} /></button>
                 </div>
                 {!collapsed ? <div className="area__projects">
                   {areaProjects.map((project) => {
