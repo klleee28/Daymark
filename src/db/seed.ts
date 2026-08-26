@@ -2,8 +2,15 @@ import { db } from './database'
 import { dateFromToday, todayKey } from '../lib/date'
 import type { Task } from '../types/entities'
 
+const DATABASE_INITIALIZED_KEY = 'daymark-database-initialized'
+
 export async function seedDatabase() {
-  if ((await db.areas.count()) > 0) return
+  const existingItemCounts = await Promise.all([db.areas.count(), db.projects.count(), db.headings.count(), db.tasks.count()])
+  if (existingItemCounts.some((count) => count > 0)) {
+    localStorage.setItem(DATABASE_INITIALIZED_KEY, '1')
+    return
+  }
+  if (localStorage.getItem(DATABASE_INITIALIZED_KEY) === '1') return
 
   const now = Date.now()
   const task = (partial: Partial<Task> & Pick<Task, 'id' | 'title'>): Task => ({
@@ -65,4 +72,5 @@ export async function seedDatabase() {
       task({ id: 'done-1', project_id: 'finances', area_id: 'personal', status: 'completed', title: 'Review monthly budget', completed_at: now - 86400000, order: 0 })
     ])
   })
+  localStorage.setItem(DATABASE_INITIALIZED_KEY, '1')
 }

@@ -209,10 +209,21 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .settings-status i.is-pending { background: #f2a228; }
 .settings-data { display: grid; gap: 9px; padding-top: 2px; }
 .settings-data p { margin: 0; color: #687381; font-size: 13px; line-height: 1.5; }
-.settings-data > button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 13px; border: 1px solid #dce2e9; border-radius: 9px; background: #fff; color: #4e5967; font-size: 13px; font-weight: 660; cursor: pointer; }
-.settings-data > button:hover { border-color: #b8cbea; background: #f7faff; color: #1a61c9; }
-.settings-data > button:disabled { opacity: .55; cursor: default; }
+.settings-data__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.settings-data__actions > button, .settings-data__import { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 13px; overflow: hidden; border: 1px solid #dce2e9; border-radius: 9px; background: #fff; color: #4e5967; font-size: 13px; font-weight: 660; cursor: pointer; }
+.settings-data__actions > button:hover, .settings-data__import:hover { border-color: #b8cbea; background: #f7faff; color: #1a61c9; }
+.settings-data__actions > button:disabled, .settings-data__import.is-disabled { opacity: .55; cursor: default; }
+.settings-data__import input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.settings-data__import.is-disabled input { cursor: default; }
 .settings-data__status { color: #637184; font-size: 11.5px; }
+.settings-import-confirmation { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 9px; margin-top: 3px; padding: 13px; border: 1px solid #edc4c4; border-radius: 10px; background: #fff8f8; color: #b43b3b; }
+.settings-import-confirmation > div:nth-child(2) { display: grid; gap: 5px; }
+.settings-import-confirmation strong { font-size: 13px; line-height: 1.4; }
+.settings-import-confirmation p { color: #7e6265; font-size: 12px; line-height: 1.45; }
+.settings-import-confirmation p b { overflow-wrap: anywhere; color: #69484b; font-weight: 680; }
+.settings-import-confirmation__actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.settings-import-confirmation__actions > button { min-height: 36px; padding: 0 12px; border: 1px solid #d8dde4; border-radius: 8px; background: white; color: #5f6977; font-size: 12.5px; font-weight: 650; cursor: pointer; }
+.settings-import-confirmation__actions > button:disabled { opacity: .5; cursor: default; }
 .dialog-done { display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%; height: 45px; border: 0; border-radius: 9px; background: var(--accent); color: white; font-size: 13px; font-weight: 680; cursor: pointer; }
 .dialog-done:disabled { background: #cbd2dc; cursor: default; }
 .area-dialog > label { display: grid; gap: 7px; margin-bottom: 17px; color: #6f7987; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
@@ -334,6 +345,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .area-page__toolbar > button { flex: 0 0 auto; }
   .entity-manage-form__dates { grid-template-columns: 1fr; }
   .task-date-actions > label { width: 100%; margin-left: 0; padding-left: 2px; }
+  .settings-data__actions { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -401,7 +413,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 :root[data-theme="dark"] .area-dialog,
 :root[data-theme="dark"] .theme-options button { border-color: #333a45; background: #1b2027; color: #dce1e8; }
 :root[data-theme="dark"] .page-header__manage,
-:root[data-theme="dark"] .settings-data > button { border-color: #39414c; background: #1b2027; color: #c9d0d9; }
+:root[data-theme="dark"] .settings-data__actions > button,
+:root[data-theme="dark"] .settings-data__import { border-color: #39414c; background: #1b2027; color: #c9d0d9; }
 :root[data-theme="dark"] .page-header__clear { border-color: #653535; color: #f18d8d; }
 :root[data-theme="dark"] .area-page__toolbar { border-color: #2c323a; }
 :root[data-theme="dark"] .area-page__toolbar h2,
@@ -431,6 +444,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 :root[data-theme="dark"] .delete-confirmation { border-color: #653535; background: #2b1d20; color: #f18d8d; }
 :root[data-theme="dark"] .clear-logbook-dialog__warning { border-color: #653535; background: #2b1d20; color: #f18d8d; }
 :root[data-theme="dark"] .clear-logbook-dialog__warning p { color: #caa4a8; }
+:root[data-theme="dark"] .settings-import-confirmation { border-color: #653535; background: #2b1d20; color: #f18d8d; }
+:root[data-theme="dark"] .settings-import-confirmation p { color: #caa4a8; }
+:root[data-theme="dark"] .settings-import-confirmation p b { color: #efc2c5; }
+:root[data-theme="dark"] .settings-import-confirmation__actions > button { border-color: #3d454f; background: #20252c; color: #ccd2da; }
 :root[data-theme="dark"] .dialog-actions > button { border-color: #3d454f; background: #20252c; color: #ccd2da; }
 :root[data-theme="dark"] .dialog-actions > .danger-button { border-color: #653535; background: #2b1d20; color: #f18d8d; }
 :root[data-theme="dark"] .delete-confirmation > div > button:not(.danger-button) { border-color: #3d454f; background: #20252c; color: #ccd2da; }
