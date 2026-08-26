@@ -10,7 +10,7 @@ function destinationForTask(task: Task): SmartView {
   if (task.status === 'completed') return 'logbook'
   if (task.status === 'inbox') return 'inbox'
   if (task.status === 'someday') return 'someday'
-  if (task.when_date === todayKey()) return 'today'
+  if (task.when_date && task.when_date <= todayKey()) return 'today'
   if (task.when_date) return 'upcoming'
   return 'anytime'
 }

@@ -11,7 +11,7 @@ export function taskBelongsToView(task: Task, view: SmartView): boolean {
     case 'inbox':
       return task.status === 'inbox'
     case 'today':
-      return (task.status === 'todo' || task.status === 'completed') && task.when_date === today
+      return (task.status === 'todo' || task.status === 'completed') && Boolean(task.when_date && task.when_date <= today)
     case 'upcoming':
       return task.status === 'todo' && Boolean(task.when_date && task.when_date > today)
     case 'anytime':

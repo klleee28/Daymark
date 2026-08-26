@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronDown, ChevronRight, FileText, Folder, MoreHorizontal, Tag } from 'lucide-react'
+import { CalendarDays, ChevronDown, ChevronRight, FileText, Flag, Folder, MoreHorizontal, Tag } from 'lucide-react'
 import { categorizeTask, moveTaskToView, toggleChecklistItem, toggleTask, updateTask } from '../db/mutations'
 import { dateFromToday, todayKey } from '../lib/date'
 import type { SmartView } from '../lib/taskFilters'
@@ -23,6 +23,7 @@ function scheduleLabel(task: Task) {
   if (!task.when_date) return ''
   if (task.when_date === todayKey()) return task.is_evening ? 'This evening' : 'Today'
   if (task.when_date === dateFromToday(1)) return 'Tomorrow'
+  if (task.when_date < todayKey()) return `Overdue · ${task.when_date}`
   return task.when_date
 }
 
@@ -45,6 +46,7 @@ export function TaskRow({ task, project, projects }: TaskRowProps) {
           {project ? <span><Folder size={14} />{project.title}</span> : null}
           {task.tags.length ? <span><Tag size={14} />{task.tags[0]}</span> : null}
           {task.when_date ? <span><CalendarDays size={14} />{scheduleLabel(task)}</span> : null}
+          {task.deadline ? <span className="task-row__deadline"><Flag size={14} />Due {task.deadline}</span> : null}
         </div>
         <button className="task-row__manage" onClick={() => setManagedTaskId(task.id)} aria-label={`Edit ${task.title}`}><MoreHorizontal size={18} /></button>
       </div>

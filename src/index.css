@@ -250,6 +250,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .entity-manage-form input, .entity-manage-form select, .entity-manage-form textarea { width: 100%; padding: 0 12px; border: 1px solid #dce1e8; border-radius: 9px; outline: 0; background: #fbfcfd; color: #252c36; font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: normal; }
 .entity-manage-form input, .entity-manage-form select { height: 43px; }
 .entity-manage-form textarea { min-height: 86px; padding-block: 10px; resize: vertical; }
+.entity-manage-form__dates { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.task-date-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-top: -2px; }
+.task-date-actions > button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 0 10px; border: 1px solid #dce1e8; border-radius: 8px; background: #fff; color: #5d6876; font-size: 12px; font-weight: 620; cursor: pointer; }
+.task-date-actions > button:hover { border-color: #b8cbea; background: #f4f8fe; color: #1b62cc; }
+.task-date-actions > button:disabled { opacity: .45; cursor: default; }
+.task-date-actions > label { display: inline-flex; grid-template-columns: none; align-items: center; gap: 7px; min-height: 34px; margin-left: auto; padding: 0 9px; border-radius: 8px; color: #5d6876; font-size: 12px; font-weight: 620; text-transform: none; letter-spacing: normal; cursor: pointer; }
+.task-date-actions > label.is-disabled { opacity: .45; cursor: default; }
+.task-date-actions input[type="checkbox"] { width: 16px; height: 16px; padding: 0; accent-color: var(--accent); }
 .entity-manage-form .dialog-done { margin-top: 2px; }
 .entity-manage-dialog__danger { margin-top: 22px; padding-top: 18px; border-top: 1px solid #e4e8ee; }
 .entity-manage-dialog__danger > div:first-child strong { color: #343c47; font-size: 13px; }
@@ -324,6 +332,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .quick-add__fields { grid-template-columns: 1fr; }
   .area-page__toolbar { align-items: flex-start; }
   .area-page__toolbar > button { flex: 0 0 auto; }
+  .entity-manage-form__dates { grid-template-columns: 1fr; }
+  .task-date-actions > label { width: 100%; margin-left: 0; padding-left: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -407,6 +417,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 :root[data-theme="dark"] .entity-manage-form textarea,
 :root[data-theme="dark"] .task-categorize select,
 :root[data-theme="dark"] .task-categorize input { border-color: #363d47; background: #15191f; color: #f1f3f6; }
+:root[data-theme="dark"] .task-date-actions > button { border-color: #39414c; background: #1b2027; color: #c9d0d9; }
 :root[data-theme="dark"] .select-control select { color: #e7ebf0; }
 :root[data-theme="dark"] .search-results strong { color: #edf0f4; }
 :root[data-theme="dark"] .search-results > button:hover,
